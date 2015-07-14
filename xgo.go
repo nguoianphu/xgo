@@ -30,6 +30,7 @@ var crossDeps = flag.String("deps", "", "CGO dependencies (configure/make based 
 // Command line arguments to pass to go build
 var buildVerbose = flag.Bool("v", false, "Print the names of packages as they are compiled")
 var buildRace = flag.Bool("race", false, "Enable data race detection (supported only on amd64)")
+var buildStatic = flag.Bool("static", false, "Adds linker options to build statically binaries where possible")
 
 func main() {
 	flag.Parse()
@@ -56,7 +57,7 @@ func main() {
 		fmt.Println("found.")
 	}
 	// Cross compile the requested package into the local folder
-	if err := compile(flag.Args()[0], *srcRemote, *srcBranch, *inPackage, *crossDeps, *outPrefix, *buildVerbose, *buildRace); err != nil {
+	if err := compile(flag.Args()[0], *srcRemote, *srcBranch, *inPackage, *crossDeps, *outPrefix, *buildVerbose, *buildRace, *buildStatic); err != nil {
 		log.Fatalf("Failed to cross compile package: %v.", err)
 	}
 }
@@ -88,7 +89,7 @@ func pullDockerImage(image string) error {
 }
 
 // Cross compiles a requested package into the current working directory.
-func compile(repo string, remote string, branch string, pack string, deps string, prefix string, verbose bool, race bool) error {
+func compile(repo string, remote string, branch string, pack string, deps string, prefix string, verbose bool, race bool, static bool) error {
 	folder, err := os.Getwd()
 	if err != nil {
 		log.Fatalf("Failed to retrieve the working directory: %v.", err)
@@ -103,6 +104,7 @@ func compile(repo string, remote string, branch string, pack string, deps string
 		"-e", "OUT="+prefix,
 		"-e", fmt.Sprintf("FLAG_V=%v", verbose),
 		"-e", fmt.Sprintf("FLAG_RACE=%v", race),
+		"-e", fmt.Sprintf("STATIC=%v", static),
 		dockerDist+*goVersion, repo))
 }
 

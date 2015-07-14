@@ -65,17 +65,23 @@ fi
 
 if [ "$FLAG_V" == "true" ]; then V=-v; fi
 if [ "$FLAG_RACE" == "true" ]; then R=-race; fi
+if [ "$STATIC" == "true" ]; then LDARGS=--ldflags '-extldflags "-static"'; fi
+
+if [ -n $BEFORE_INSTALL ]; then
+	echo "Execute $BEFORE_INSTALL"
+	$BEFORE_INSTALL
+fi
 
 # Build for each platform individually
 echo "Compiling for linux/amd64..."
 HOST=x86_64-linux PREFIX=/usr/local $BUILD_DEPS /deps
 GOOS=linux GOARCH=amd64 CGO_ENABLED=1 go get -d ./$PACK
-GOOS=linux GOARCH=amd64 CGO_ENABLED=1 go build $V $R -o $NAME-linux-amd64$R ./$PACK
+GOOS=linux GOARCH=amd64 CGO_ENABLED=1 go build $V $R $LDARGS -o $NAME-linux-amd64$R ./$PACK
 
 echo "Compiling for linux/386..."
 HOST=i686-linux PREFIX=/usr/local $BUILD_DEPS /deps
 GOOS=linux GOARCH=386 CGO_ENABLED=1 go get -d ./$PACK
-GOOS=linux GOARCH=386 CGO_ENABLED=1 go build $V -o $NAME-linux-386 ./$PACK
+GOOS=linux GOARCH=386 CGO_ENABLED=1 go build $V $LDARGS -o $NAME-linux-386 ./$PACK
 
 echo "Compiling for linux/arm..."
 CC=arm-linux-gnueabi-gcc HOST=arm-linux PREFIX=/usr/local/arm $BUILD_DEPS /deps
@@ -85,7 +91,7 @@ CC=arm-linux-gnueabi-gcc GOOS=linux GOARCH=arm CGO_ENABLED=1 GOARM=5 go build $V
 echo "Compiling for windows/amd64..."
 CC=x86_64-w64-mingw32-gcc HOST=x86_64-w64-mingw32 PREFIX=/usr/x86_64-w64-mingw32 $BUILD_DEPS /deps
 CC=x86_64-w64-mingw32-gcc GOOS=windows GOARCH=amd64 CGO_ENABLED=1 go get -d ./$PACK
-CC=x86_64-w64-mingw32-gcc GOOS=windows GOARCH=amd64 CGO_ENABLED=1 go build $V $R -o $NAME-windows-amd64$R.exe ./$PACK
+CC=x86_64-w64-mingw32-gcc GOOS=windows GOARCH=amd64 CGO_ENABLED=1 go build  $V $R -o $NAME-windows-amd64$R.exe ./$PACK
 
 echo "Compiling for windows/386..."
 CC=i686-w64-mingw32-gcc HOST=i686-w64-mingw32 PREFIX=/usr/i686-w64-mingw32 $BUILD_DEPS /deps
