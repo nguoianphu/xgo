@@ -63,9 +63,10 @@ if [ "$OUT" != "" ]; then
   NAME=$OUT
 fi
 
+
 if [ "$FLAG_V" == "true" ]; then V=-v; fi
 if [ "$FLAG_RACE" == "true" ]; then R=-race; fi
-if [ "$STATIC" == "true" ]; then LDARGS=--ldflags '-extldflags "-static"'; fi
+if [ "$STATIC" == "true" ]; then LDARGS='--ldflags "-extldflags \"-static\""'; fi
 
 if [ -n $BEFORE_INSTALL ]; then
 	echo "Execute $BEFORE_INSTALL"
