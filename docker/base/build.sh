@@ -17,7 +17,10 @@
 
 # Download the canonical import path (may fail, don't allow failures beyond)
 echo "Fetching main repository $1..."
-go get -d $1
+mkdir -p $GOPATH/src/`dirname $1`
+cd $GOPATH/src/`dirname $1`
+git clone https://$1.git
+
 set -e
 
 cd $GOPATH/src/$1
