@@ -49,7 +49,7 @@ fi
 
 # Download all the C dependencies
 echo "Fetching dependencies..."
-mkdir /deps
+mkdir -p /deps
 DEPS=($DEPS) && for dep in "${DEPS[@]}"; do
   echo Downloading $dep
   if [ "${dep##*.}" == "tar" ]; then wget -q $dep -O - | tar -C /deps -x; fi
@@ -66,23 +66,24 @@ fi
 
 if [ "$FLAG_V" == "true" ]; then V=-v; fi
 if [ "$FLAG_RACE" == "true" ]; then R=-race; fi
-if [ "$STATIC" == "true" ]; then LDARGS='--ldflags "-extldflags \"-static\""'; fi
+if [ "$STATIC" == "true" ]; then LDARGS=--ldflags\ \'-extldflags\ \"-static\"\'; fi
 
-if [ -n $BEFORE_INSTALL ]; then
-	echo "Execute $BEFORE_INSTALL"
-	$BEFORE_INSTALL
+if [ -n $BEFORE_BUILD ]; then
+	chmod +x /scripts/$BEFORE_BUILD
+	echo "Execute /scripts/$BEFORE_BUILD"
+	/scripts/$BEFORE_BUILD
 fi
 
 # Build for each platform individually
 echo "Compiling for linux/amd64..."
 HOST=x86_64-linux PREFIX=/usr/local $BUILD_DEPS /deps
 GOOS=linux GOARCH=amd64 CGO_ENABLED=1 go get -d ./$PACK
-GOOS=linux GOARCH=amd64 CGO_ENABLED=1 go build $V $R $LDARGS -o $NAME-linux-amd64$R ./$PACK
+sh -c "GOOS=linux GOARCH=amd64 CGO_ENABLED=1 go build $V $R $LDARGS -o $NAME-linux-amd64$R ./$PACK"
 
 echo "Compiling for linux/386..."
 HOST=i686-linux PREFIX=/usr/local $BUILD_DEPS /deps
 GOOS=linux GOARCH=386 CGO_ENABLED=1 go get -d ./$PACK
-GOOS=linux GOARCH=386 CGO_ENABLED=1 go build $V $LDARGS -o $NAME-linux-386 ./$PACK
+sh -c "GOOS=linux GOARCH=386 CGO_ENABLED=1 go build $V $LDARGS -o $NAME-linux-386 ./$PACK"
 
 #echo "Compiling for linux/arm..."
 #CC=arm-linux-gnueabi-gcc HOST=arm-linux PREFIX=/usr/local/arm $BUILD_DEPS /deps
