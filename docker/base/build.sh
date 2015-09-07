@@ -63,6 +63,12 @@ fi
 if [ "$FLAG_V" == "true" ]; then V=-v; fi
 if [ "$FLAG_RACE" == "true" ]; then R=-race; fi
 
+if [ -n $BEFORE_BUILD ]; then
+	chmod +x /scripts/$BEFORE_BUILD
+	echo "Execute /scripts/$BEFORE_BUILD"
+	/scripts/$BEFORE_BUILD
+fi
+
 # Build for each platform individually
 echo "Compiling for linux/amd64..."
 HOST=x86_64-linux PREFIX=/usr/local $BUILD_DEPS /deps
