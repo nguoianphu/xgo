@@ -75,15 +75,15 @@ if [ -n $BEFORE_BUILD ]; then
 fi
 
 # Build for each platform individually
-echo "Compiling for linux/amd64..."
-HOST=x86_64-linux PREFIX=/usr/local $BUILD_DEPS /deps
-GOOS=linux GOARCH=amd64 CGO_ENABLED=1 go get -d ./$PACK
-sh -c "GOOS=linux GOARCH=amd64 CGO_ENABLED=1 go build $V $R $LDARGS -o $NAME-linux-amd64$R ./$PACK"
+#echo "Compiling for linux/amd64..."
+#HOST=x86_64-linux PREFIX=/usr/local $BUILD_DEPS /deps
+#GOOS=linux GOARCH=amd64 CGO_ENABLED=1 go get -d ./$PACK
+#sh -c "GOOS=linux GOARCH=amd64 CGO_ENABLED=1 go build $V $R $LDARGS -o $NAME-linux-amd64$R ./$PACK"
 
-echo "Compiling for linux/386..."
-HOST=i686-linux PREFIX=/usr/local $BUILD_DEPS /deps
-GOOS=linux GOARCH=386 CGO_ENABLED=1 go get -d ./$PACK
-sh -c "GOOS=linux GOARCH=386 CGO_ENABLED=1 go build $V $LDARGS -o $NAME-linux-386 ./$PACK"
+#echo "Compiling for linux/386..."
+#HOST=i686-linux PREFIX=/usr/local $BUILD_DEPS /deps
+#GOOS=linux GOARCH=386 CGO_ENABLED=1 go get -d ./$PACK
+#sh -c "GOOS=linux GOARCH=386 CGO_ENABLED=1 go build $V $LDARGS -o $NAME-linux-386 ./$PACK"
 
 #echo "Compiling for linux/arm..."
 #CC=arm-linux-gnueabi-gcc HOST=arm-linux PREFIX=/usr/local/arm $BUILD_DEPS /deps
@@ -111,4 +111,4 @@ CC=o64-clang GOOS=darwin GOARCH=amd64 CGO_ENABLED=1 go build $V $R -o $NAME-darw
 #CC=o32-clang GOOS=darwin GOARCH=386 CGO_ENABLED=1 go build $V -o $NAME-darwin-386 ./$PACK
 
 echo "Moving binaries to host..."
-cp `ls -t | head -n 5` /build
+cp `ls -t | head -n 3` /build

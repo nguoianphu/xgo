@@ -3,6 +3,6 @@
 #
 # Released under the MIT license.
 
-FROM tsg/xgo-1.4.2
+FROM tudorg/xgo-1.4.2
 
 MAINTAINER Péter Szilágyi <peterke@gmail.com>

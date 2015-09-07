@@ -3,7 +3,7 @@
 #
 # Released under the MIT license.
 
-FROM tsg/xgo-base
+FROM tudorg/xgo-base
 
 MAINTAINER Péter Szilágyi <peterke@gmail.com>
 
