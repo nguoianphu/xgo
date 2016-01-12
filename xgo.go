@@ -30,6 +30,7 @@ var srcBranch = flag.String("branch", "", "Version control branch to build")
 var crossDeps = flag.String("deps", "", "CGO dependencies (configure/make based archives)")
 var dockerImage = flag.String("image", "", "Use a custom docker image")
 var beforeBuildScript = flag.String("before-build", "", "Script to run before the build step")
+var source = flag.String("source", "", "Copy from the source directory instead of cloning")
 
 // Command line arguments to pass to go build
 var buildVerbose = flag.Bool("v", false, "Print the names of packages as they are compiled")
@@ -66,7 +67,7 @@ func main() {
 		fmt.Println("found.")
 	}
 	// Cross compile the requested package into the local folder
-	if err := compile(flag.Args()[0], image, *srcRemote, *srcBranch, *inPackage, *crossDeps, *outPrefix, *buildVerbose, *buildRace, *beforeBuildScript); err != nil {
+	if err := compile(flag.Args()[0], image, *srcRemote, *srcBranch, *inPackage, *crossDeps, *outPrefix, *buildVerbose, *buildRace, *beforeBuildScript, *source); err != nil {
 		log.Fatalf("Failed to cross compile package: %v.", err)
 	}
 }
@@ -98,7 +99,7 @@ func pullDockerImage(image string) error {
 }
 
 // Cross compiles a requested package into the current working directory.
-func compile(repo string, image string, remote string, branch string, pack string, deps string, prefix string, verbose bool, race bool, beforeBuild string) error {
+func compile(repo string, image string, remote string, branch string, pack string, deps string, prefix string, verbose bool, race bool, beforeBuild string, source string) error {
 	folder, err := os.Getwd()
 	if err != nil {
 		log.Fatalf("Failed to retrieve the working directory: %v.", err)
@@ -122,18 +123,33 @@ func compile(repo string, image string, remote string, branch string, pack strin
 		}
 	}
 	fmt.Printf("Cross compiling %s...\n", repo)
-	return run(exec.Command("docker", "run",
-		"-v", folder+":/build",
-		"-v", tmpDir+":/scripts",
-		"-e", "REPO_REMOTE="+remote,
-		"-e", "REPO_BRANCH="+branch,
-		"-e", "PACK="+pack,
-		"-e", "DEPS="+deps,
-		"-e", "OUT="+prefix,
+	args := []string{
+		"run",
+		"-v", folder + ":/build",
+		"-v", tmpDir + ":/scripts",
+		"-e", "REPO_REMOTE=" + remote,
+		"-e", "REPO_BRANCH=" + branch,
+		"-e", "PACK=" + pack,
+		"-e", "DEPS=" + deps,
+		"-e", "OUT=" + prefix,
 		"-e", fmt.Sprintf("FLAG_V=%v", verbose),
 		"-e", fmt.Sprintf("FLAG_RACE=%v", race),
 		"-e", fmt.Sprintf("BEFORE_BUILD=%v", filepath.Base(beforeBuild)),
-		image, repo))
+	}
+	if len(source) > 0 {
+		sourceDir, err := filepath.Abs(source)
+		if err != nil {
+			log.Fatalf("Error getting absolute path for: %s", source)
+		}
+		args = append(args, "-v")
+		args = append(args, sourceDir+":/source")
+		args = append(args, "-e")
+		args = append(args, "SOURCE=/source")
+	}
+	args = append(args, image)
+	args = append(args, repo)
+	fmt.Printf("Running docker %v\n", args)
+	return run(exec.Command("docker", args...))
 }
 
 // Executes a command synchronously, redirecting its output to stdout.

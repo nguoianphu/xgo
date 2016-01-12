@@ -17,7 +17,14 @@
 
 # Download the canonical import path (may fail, don't allow failures beyond)
 echo "Fetching main repository $1..."
-go get -d $1
+if [ "$SOURCE" != "" ]; then
+    mkdir -p $GOPATH/src/`dirname $1`
+    cd $GOPATH/src/`dirname $1`
+    rsync --exclude ".git" -a $SOURCE/ `basename $1`/
+else
+    go get -d $1
+fi
+
 set -e
 
 cd $GOPATH/src/$1
