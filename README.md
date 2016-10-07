@@ -1,4 +1,8 @@
 # xgo - Go CGO cross compiler
+[![Build Status](https://travis-ci.org/nguoianphu/xgo.svg?branch=master)](https://travis-ci.org/nguoianphu/xgo)
+
+
+----
 
 Although Go strives to be a cross platform language, cross compilation from one
 platform to another is not as simple as it could be, as you need the Go sources
