@@ -32,7 +32,7 @@ ENV OSX_SDK      MacOSX10.6.sdk
 
 RUN \
   git clone https://github.com/tpoechtrager/osxcross.git && \
-  sed -i.bak s/read/echo \"\" \n#read/g /osxcross/build.sh && \
+  sed -i.bak 's/read/echo \"\" \\n #read/g' /osxcross/build.sh && \
   \
   $FETCH $OSX_SDK_PATH f526b4ae9806e8d31e3b094e3f004f8f160a3fad && \
   tar -xzf `basename $OSX_SDK_PATH` --strip-components 1 SDKs/$OSX_SDK && \
