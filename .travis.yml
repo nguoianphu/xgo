@@ -4,7 +4,8 @@ services:
 
 script:
   - echo "Build xgo-base image"
-  - cd docker/base/
-  - docker build -t "xgo-base" .
+  # - cd docker/base/
+  - docker build -t "xgo-base" -f docker/base/ .
+  - docker build -t "xgo-base" -f docker/go-1.7.1/ .
   - echo "List all image"
   - docker images
