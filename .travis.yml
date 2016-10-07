@@ -4,6 +4,6 @@ services:
 
 script:
   - echo "Build xgo-base image"
-  - docker build -t "xgo-base" -f docker/base/Dockerfile
+  - docker build -t "xgo-base" -f docker/base/Dockerfile .
   - echo "List all image"
   - docker images
