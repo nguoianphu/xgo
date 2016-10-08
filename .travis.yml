@@ -12,6 +12,5 @@ script:
   - docker images
   - cd ./
   - go get github.com/nguoianphu/xgo
-  - xgo
   - echo "Build golang"
-  # - xgo github.com/project-iris/iris
+  - xgo github.com/project-iris/iris
