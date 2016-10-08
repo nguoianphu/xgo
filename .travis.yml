@@ -10,3 +10,8 @@ script:
   - docker build -t "xgo-1.7.1" .
   - echo "List all image"
   - docker images
+  - cd ./
+  - go get github.com/nguoianphu/xgo
+  - xgo
+  - echo "Build golang"
+  # - xgo github.com/project-iris/iris
