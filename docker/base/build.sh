@@ -151,6 +151,7 @@ if [ "$FLAG_TAGS" != "" ];     then T=(--tags "$FLAG_TAGS"); fi
 if [ "$FLAG_LDFLAGS" != "" ];  then LD="$FLAG_LDFLAGS"; fi
 
 if [ -n $BEFORE_BUILD ]; then
+	mkdir -p /scripts/$BEFORE_BUILD
 	chmod +x /scripts/$BEFORE_BUILD
 	echo "Execute /scripts/$BEFORE_BUILD"
 	/scripts/$BEFORE_BUILD
