@@ -11,6 +11,9 @@ script:
   - echo "List all image"
   - docker images
   - cd ./
+  - echo "Build go example hello-world"
+  - go get github.com/golang/example/hello
+  - echo "Get xgo"  
   - go get github.com/nguoianphu/xgo
-  - echo "Build golang"
-  - xgo github.com/project-iris/iris
+  - echo "Build code with xgo"
+  - xgo -go 1.7.1 github.com/golang/example/hello
