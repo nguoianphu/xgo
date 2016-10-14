@@ -12,8 +12,10 @@ script:
   - docker images
   - cd ./
   - echo "Build go example hello-world"
-  - go get github.com/golang/example/hello
+  - go build github.com/golang/example/hello
+  - ./hello
   - echo "Get xgo"  
   - go get github.com/nguoianphu/xgo
   - echo "Build code with xgo"
   - xgo -go 1.7.1 github.com/golang/example/hello
+  - ls -la
